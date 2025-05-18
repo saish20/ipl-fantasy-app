@@ -1,0 +1,81 @@
+  .login-bg {
+    background-image: url('../assets/ipl-logo.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;        /* ✅ fills screen while maintaining aspect ratio */
+    background-attachment: fixed;  /* ✅ optional parallax-like effect */
+    min-height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  
+  .login-header {
+    text-align: center;
+    color: white;
+    margin-bottom: 1rem;
+  }
+  
+  .login-header img {
+    width: 70px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .login-header h1 {
+    font-size: 2rem;
+    margin: 0;
+  }
+  
+  .login-card {
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 2rem;
+    width: 300px;
+    color: white;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    text-align: center;
+  }
+  
+  .login-card h2 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .login-card input {
+    width: 100%;
+    padding: 0.6rem;
+    margin-bottom: 1rem;
+    border: none;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.85);
+    color: #333;
+  }
+  
+  .login-card input::placeholder {
+    color: #666;
+  }
+  
+  .login-card button {
+    width: 100%;
+    padding: 0.6rem;
+    background-color: #0071ce;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .login-card button:hover {
+    background-color: #005ba3;
+  }
+  
+  .login-card .error {
+    color: #ffcccc;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
