@@ -37,11 +37,19 @@
     color: white;
     box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;    
   }
   
-  .login-card h2 {
-    margin-bottom: 1.5rem;
-  }
+.login-card h2 {
+  margin-bottom: 1.5rem;
+  color: #ffffff;               /* Ensures full white */
+  font-size: 1.75rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.6); /* Adds shadow for contrast */
+}
+
   
   .login-card input {
     width: 100%;
