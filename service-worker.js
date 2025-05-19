@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/ipl-fantasy-app/precache-manifest.b00600fdd7c6bc471d51dbf715f48bfe.js"
+  "/ipl-fantasy-app/precache-manifest.4446d74a225d99752c49f562766d5445.js"
 );
 
 self.addEventListener('message', (event) => {
