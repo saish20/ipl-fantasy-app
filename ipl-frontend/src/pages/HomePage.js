@@ -17,10 +17,16 @@ const HomePage = () => {
         <h1>Welcome, {username}!</h1>
         <p>Get started with your IPL Fantasy predictions below:</p>
         <div className="home-buttons">
-          <button onClick={() => navigate('/predict')}>🔮 Make Prediction</button>
-          <button onClick={() => navigate('/leaderboard')}>📊 View Leaderboard</button>
+          <button onClick={() => navigate('/predict')}>
+            <span role="img" aria-label="crystal ball">🔮</span> Make Prediction
+          </button>
+          <button onClick={() => navigate('/leaderboard')}>
+            <span role="img" aria-label="bar chart">📊</span> View Leaderboard
+          </button>
         </div>
-        <button className="logout-button" onClick={handleLogout}>🚪 Logout</button>
+        <button className="logout-button" onClick={handleLogout}>
+          <span role="img" aria-label="door">🚪</span> Logout
+        </button>
       </div>
     </div>
   );

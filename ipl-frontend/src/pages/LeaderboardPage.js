@@ -50,7 +50,9 @@ const LeaderboardPage = () => {
 
     return (
       <div className="leaderboard-section">
-        <h2>🏆 Current Standings</h2>
+        <h2>
+          <span role="img" aria-label="trophy">🏆</span> Current Standings
+        </h2>
         <table>
           <thead>
             <tr>
@@ -76,7 +78,7 @@ const LeaderboardPage = () => {
   return (
     <div className="leaderboard-container">
       <button className="back-button" onClick={() => navigate('/home')}>
-        ⬅ Back to Home
+        <span role="img" aria-label="back arrow">⬅</span> Back to Home
       </button>
       {renderOverallTable()}
       <div className="leaderboard-grid">
