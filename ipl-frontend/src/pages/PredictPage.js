@@ -17,7 +17,7 @@ const PredictPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/get-matches')
+    axios.get('https://ipl-fantasy-app.onrender.com/api/get-matches')
       .then(res => {
         setMatches(res.data.matches);
       })
@@ -38,7 +38,7 @@ const PredictPage = () => {
     setTeamOptions([team1, team2]);
 
     try {
-      const res = await axios.get('http://localhost:5000/api/players', {
+      const res = await axios.get('https://ipl-fantasy-app.onrender.com/api/players', {
         params: { team1, team2 }
       });
       setPlayerOptions(res.data.players || []);
@@ -52,7 +52,7 @@ const PredictPage = () => {
     e.preventDefault();
 
     try {
-      await axios.post('http://localhost:5000/api/submit-prediction', {
+      await axios.post('https://ipl-fantasy-app.onrender.com/api/submit-prediction', {
         user_id: userId,
         match_id: selectedMatchId,
         predicted_first_innings_score: Number(firstInningsScore),

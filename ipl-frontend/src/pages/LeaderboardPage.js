@@ -8,7 +8,7 @@ const LeaderboardPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/leaderboard')
+    axios.get('https://ipl-fantasy-app.onrender.com/api/leaderboard')
       .then(res => setData(res.data.leaderboard))
       .catch(err => console.error('Failed to fetch leaderboard:', err));
   }, []);

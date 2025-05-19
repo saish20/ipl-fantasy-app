@@ -10,7 +10,7 @@ const AdminResultForm = () => {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/get-matches')
+    axios.get('https://ipl-fantasy-app.onrender.com/api/get-matches')
       .then(res => setMatches(res.data.matches))
       .catch(err => console.error(err));
   }, []);
@@ -18,7 +18,7 @@ const AdminResultForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/update-results', {
+      await axios.post('https://ipl-fantasy-app.onrender.com/api/update-results', {
         schedule_id: selectedMatchId,
         actual_first_innings_score: Number(score),
         actual_match_winner: winner,
