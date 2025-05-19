@@ -1,25 +1,16 @@
 {
   "files": {
-    "main.css": "/ipl-fantasy-app/static/css/main.111f16c2.chunk.css",
-    "main.js": "/ipl-fantasy-app/static/js/main.11472e4d.chunk.js",
-    "main.js.map": "/ipl-fantasy-app/static/js/main.11472e4d.chunk.js.map",
-    "runtime-main.js": "/ipl-fantasy-app/static/js/runtime-main.f2648ae8.js",
-    "runtime-main.js.map": "/ipl-fantasy-app/static/js/runtime-main.f2648ae8.js.map",
-    "static/js/2.1ceb4400.chunk.js": "/ipl-fantasy-app/static/js/2.1ceb4400.chunk.js",
-    "static/js/2.1ceb4400.chunk.js.map": "/ipl-fantasy-app/static/js/2.1ceb4400.chunk.js.map",
-    "static/js/3.a5e72306.chunk.js": "/ipl-fantasy-app/static/js/3.a5e72306.chunk.js",
-    "static/js/3.a5e72306.chunk.js.map": "/ipl-fantasy-app/static/js/3.a5e72306.chunk.js.map",
+    "main.css": "/ipl-fantasy-app/static/css/main.be9207ad.css",
+    "main.js": "/ipl-fantasy-app/static/js/main.8d67cb71.js",
+    "static/js/453.9f3b998a.chunk.js": "/ipl-fantasy-app/static/js/453.9f3b998a.chunk.js",
+    "static/media/ipl-logo.png": "/ipl-fantasy-app/static/media/ipl-logo.64e5b1f3dc9b86b707ea.png",
     "index.html": "/ipl-fantasy-app/index.html",
-    "precache-manifest.4446d74a225d99752c49f562766d5445.js": "/ipl-fantasy-app/precache-manifest.4446d74a225d99752c49f562766d5445.js",
-    "service-worker.js": "/ipl-fantasy-app/service-worker.js",
-    "static/css/main.111f16c2.chunk.css.map": "/ipl-fantasy-app/static/css/main.111f16c2.chunk.css.map",
-    "static/js/2.1ceb4400.chunk.js.LICENSE.txt": "/ipl-fantasy-app/static/js/2.1ceb4400.chunk.js.LICENSE.txt",
-    "static/media/LoginPage.css": "/ipl-fantasy-app/static/media/ipl-logo.54a4de74.png"
+    "main.be9207ad.css.map": "/ipl-fantasy-app/static/css/main.be9207ad.css.map",
+    "main.8d67cb71.js.map": "/ipl-fantasy-app/static/js/main.8d67cb71.js.map",
+    "453.9f3b998a.chunk.js.map": "/ipl-fantasy-app/static/js/453.9f3b998a.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.f2648ae8.js",
-    "static/js/2.1ceb4400.chunk.js",
-    "static/css/main.111f16c2.chunk.css",
-    "static/js/main.11472e4d.chunk.js"
+    "static/css/main.be9207ad.css",
+    "static/js/main.8d67cb71.js"
   ]
 }
