@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/ipl-fantasy-app/static/css/main.be9207ad.css",
-    "main.js": "/ipl-fantasy-app/static/js/main.8d67cb71.js",
+    "main.css": "/ipl-fantasy-app/static/css/main.7b9044bd.css",
+    "main.js": "/ipl-fantasy-app/static/js/main.dc38e481.js",
     "static/js/453.9f3b998a.chunk.js": "/ipl-fantasy-app/static/js/453.9f3b998a.chunk.js",
     "static/media/ipl-logo.png": "/ipl-fantasy-app/static/media/ipl-logo.64e5b1f3dc9b86b707ea.png",
     "index.html": "/ipl-fantasy-app/index.html",
-    "main.be9207ad.css.map": "/ipl-fantasy-app/static/css/main.be9207ad.css.map",
-    "main.8d67cb71.js.map": "/ipl-fantasy-app/static/js/main.8d67cb71.js.map",
+    "main.7b9044bd.css.map": "/ipl-fantasy-app/static/css/main.7b9044bd.css.map",
+    "main.dc38e481.js.map": "/ipl-fantasy-app/static/js/main.dc38e481.js.map",
     "453.9f3b998a.chunk.js.map": "/ipl-fantasy-app/static/js/453.9f3b998a.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.be9207ad.css",
-    "static/js/main.8d67cb71.js"
+    "static/css/main.7b9044bd.css",
+    "static/js/main.dc38e481.js"
   ]
 }
