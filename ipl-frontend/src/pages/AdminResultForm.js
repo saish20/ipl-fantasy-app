@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './AdminResultForm.css';
+
 
 const AdminResultForm = () => {
   const [matches, setMatches] = useState([]);
@@ -31,7 +33,7 @@ const AdminResultForm = () => {
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
+    <div className="admin-form-container">
       <h2>Update Match Result</h2>
       <form onSubmit={handleSubmit}>
         <div>

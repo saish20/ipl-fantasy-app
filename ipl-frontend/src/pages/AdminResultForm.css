@@ -1,0 +1,67 @@
+.admin-form-container {
+  max-width: 500px;
+  margin: 3rem auto;
+  background-color: #fefefe;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-form-container h2 {
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #333;
+}
+
+.admin-form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.admin-form-container label {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  display: block;
+  color: #444;
+}
+
+.admin-form-container input,
+.admin-form-container select {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.admin-form-container input:focus,
+.admin-form-container select:focus {
+  border-color: #0077cc;
+  outline: none;
+  background-color: #f0f8ff;
+}
+
+.admin-form-container button {
+  padding: 0.8rem;
+  font-size: 1rem;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.admin-form-container button:hover {
+  background-color: #005fa3;
+}
+
+.admin-form-container p {
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: 500;
+  color: green;
+}

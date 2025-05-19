@@ -5,6 +5,7 @@ import './HomePage.css';
 const HomePage = () => {
   const navigate = useNavigate();
   const username = localStorage.getItem('username') || 'Player';
+  const userType = localStorage.getItem('user_type') || 'user';
 
   const handleLogout = () => {
     localStorage.clear();
@@ -23,6 +24,11 @@ const HomePage = () => {
           <button onClick={() => navigate('/leaderboard')}>
             <span role="img" aria-label="bar chart">📊</span> View Leaderboard
           </button>
+          {userType === 'admin' && (
+            <button onClick={() => navigate('/adminresults')}>
+              <span role="img" aria-label="admin panel">🛠️</span> Admin Results
+            </button>
+          )}
         </div>
         <button className="logout-button" onClick={handleLogout}>
           <span role="img" aria-label="door">🚪</span> Logout

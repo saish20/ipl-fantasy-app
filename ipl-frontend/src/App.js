@@ -5,6 +5,7 @@ import PredictPage from './pages/PredictPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import HomePage from './pages/HomePage';
 import AdminResultForm from './pages/AdminResultForm';
+import AdminRoute from './components/AdminRoute';
 
 const AppRoutes = () => {
   const navigate = useNavigate();
@@ -19,7 +20,14 @@ const AppRoutes = () => {
       <Route path="/home" element={<HomePage />} />
       <Route path="/predict" element={<PredictPage />} />
       <Route path="/leaderboard" element={<LeaderboardPage />} />
-      <Route path="/admin/results" element={<AdminResultForm />} />
+      <Route 
+        path="/admin/results" 
+        element={
+          <AdminRoute>
+            <AdminResultForm />
+          </AdminRoute>
+        } 
+      />
     </Routes>
   );
 };
