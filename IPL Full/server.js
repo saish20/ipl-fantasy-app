@@ -138,8 +138,8 @@ app.get('/api/leaderboard', async (req, res) => {
     }
   });
 
-  //update results
-  app.post('/api/update-results', async (req, res) => {
+// Update results
+app.post('/api/update-results', async (req, res) => {
   const { schedule_id, actual_first_innings_score, actual_match_winner, actual_mom } = req.body;
 
   const client = await pool.connect();
@@ -174,16 +174,16 @@ app.get('/api/leaderboard', async (req, res) => {
       if (row.predicted_mom === actual_mom) momPoints = 5;
       if (Math.abs(row.predicted_score - actual_first_innings_score) <= 2) fisPoints = 3;
 
-    await client.query(
-      `INSERT INTO leaderboard (user_id, username, fis_points, mw_points, mom_points)
-      VALUES ($1, $2, $3::int, $4::int, $5::int)
-      ON CONFLICT (user_id) DO UPDATE
-      SET fis_points = leaderboard.fis_points + $3::int,
-          mw_points = leaderboard.mw_points + $4::int,
-          mom_points = leaderboard.mom_points + $5::int`,
-      [row.user_id, row.username, fisPoints, mwPoints, momPoints]
-    );
-
+      // 4. Upsert into leaderboard
+      await client.query(
+        `INSERT INTO leaderboard (user_id, username, fis_points, mw_points, mom_points)
+         VALUES ($1, $2, $3::int, $4::int, $5::int)
+         ON CONFLICT (user_id) DO UPDATE
+         SET fis_points = leaderboard.fis_points + ($3::int),
+             mw_points = leaderboard.mw_points + ($4::int),
+             mom_points = leaderboard.mom_points + ($5::int)`,
+        [row.user_id, row.username, fisPoints, mwPoints, momPoints]
+      );
 
       // 5. Update predictions with points
       await client.query(
