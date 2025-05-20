@@ -176,21 +176,11 @@ app.post('/api/update-results', async (req, res) => {
 
       // 4. Upsert into leaderboard
       await client.query(
-        `WITH new_values AS (
-          SELECT $1::uuid AS user_id,
-                  $2::text AS username,
-                  $3::int AS fis_points,
-                  $4::int AS mw_points,
-                  $5::int AS mom_points
-        )
-        INSERT INTO leaderboard (user_id, username, fis_points, mw_points, mom_points)
-        SELECT * FROM new_values
+        `INSERT INTO leaderboard (user_id, username, fis_points, mw_points, mom_points) VALUES ($1::uuid, $2::text, $3::int, $4::int, $5::int)
         ON CONFLICT (user_id) DO UPDATE
-        SET fis_points = leaderboard.fis_points + new_values.fis_points,
-            mw_points = leaderboard.mw_points + new_values.mw_points,
-            mom_points = leaderboard.mom_points + new_values.mom_points
-        FROM new_values
-        WHERE leaderboard.user_id = new_values.user_id`,
+        SET fis_points = leaderboard.fis_points + EXCLUDED.fis_points,
+       mw_points = leaderboard.mw_points + EXCLUDED.mw_points,
+       mom_points = leaderboard.mom_points + EXCLUDED.mom_points`,
         [row.user_id, row.username, fisPoints, mwPoints, momPoints]
       );
 
