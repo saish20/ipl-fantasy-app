@@ -202,3 +202,21 @@ app.get('/api/leaderboard', async (req, res) => {
     }
   });
   
+  //all matches
+  app.get('/api/get-all-matches', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, team1, team2, match_date, venue, status 
+       FROM schedule 
+       ORDER BY match_date ASC`
+    );
+
+    res.json({
+      success: true,
+      matches: result.rows
+    });
+  } catch (error) {
+    console.error('Error fetching all matches:', error.message);
+    res.status(500).send('Server error');
+  }
+});
