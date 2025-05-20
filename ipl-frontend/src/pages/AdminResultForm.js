@@ -12,7 +12,7 @@ const AdminResultForm = () => {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    axios.get('https://ipl-fantasy-app.onrender.com/api/get-matches')
+    axios.get('https://ipl-fantasy-app.onrender.com/api/get-all-matches')
       .then(res => setMatches(res.data.matches))
       .catch(err => console.error(err));
   }, []);
