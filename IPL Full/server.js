@@ -179,11 +179,12 @@ app.post('/api/update-results', async (req, res) => {
         `INSERT INTO leaderboard (user_id, username, fis_points, mw_points, mom_points)
         VALUES ($1, $2, $3::int, $4::int, $5::int)
         ON CONFLICT (user_id) DO UPDATE
-        SET fis_points = COALESCE(leaderboard.fis_points, 0)::int + ($3::int),
-            mw_points = COALESCE(leaderboard.mw_points, 0)::int + ($4::int),
-            mom_points = COALESCE(leaderboard.mom_points, 0)::int + ($5::int)`,
+        SET fis_points = COALESCE(leaderboard.fis_points::int, 0) + ($3::int),
+            mw_points = COALESCE(leaderboard.mw_points::int, 0) + ($4::int),
+            mom_points = COALESCE(leaderboard.mom_points::int, 0) + ($5::int)`,
         [row.user_id, row.username, fisPoints, mwPoints, momPoints]
       );
+
 
 
       // 5. Update predictions with points
