@@ -137,70 +137,74 @@ app.get('/api/leaderboard', async (req, res) => {
       res.status(500).send('Server error');
     }
   });
-  
-  app.post('/api/update-results', async (req, res) => {
-    const { schedule_id, actual_first_innings_score, actual_match_winner, actual_mom } = req.body;
-  
-    const client = await pool.connect();
-    try {
-      await client.query('BEGIN');
-  
-      // 1. Upsert into actuals/results table
-      await client.query(
-        `INSERT INTO results (schedule_id, actual_first_innings_score, actual_match_winner, actual_mom)
-         VALUES ($1, $2, $3, $4)
-         ON CONFLICT (schedule_id) DO UPDATE
-         SET actual_first_innings_score = $2,
-             actual_match_winner = $3,
-             actual_mom = $4`,
-        [schedule_id, actual_first_innings_score, actual_match_winner, actual_mom]
-      );
-  
-      // 2. Get all predictions for that match
-      const predictions = await client.query(
-        `SELECT p.user_id, u.username, p.predicted_score, p.predicted_winner, p.predicted_mom
-         FROM predictions p
-         JOIN users u ON u.id = p.user_id
-         WHERE p.match_id = $1`,
-        [schedule_id]
-      );
-  
-      for (const row of predictions.rows) {
-        let fisPoints = 0, mwPoints = 0, momPoints = 0;
-  
-        if (row.predicted_winner === actual_match_winner) mwPoints = 2;
-        if (row.predicted_mom === actual_mom) momPoints = 5;
-        if (Math.abs(row.predicted_score - actual_first_innings_score) <= 2) fisPoints = 3;
-  
-        // 3. Update leaderboard
-        await client.query(
-          `INSERT INTO leaderboard (user_id, username, fis_points, mw_points, mom_points)
-           VALUES ($1, $2, $3, $4, $5)
-           ON CONFLICT (user_id) DO UPDATE
-           SET fis_points = leaderboard.fis_points + $3,
-               mw_points = leaderboard.mw_points + $4,
-               mom_points = leaderboard.mom_points + $5`,
-          [row.user_id, row.username, fisPoints, mwPoints, momPoints]
-        );
 
-        await client.query(
-          `UPDATE predictions
-           SET fis_points = $1, mw_points = $2, mom_points = $3, total_points = $1 + $2 + $3
-           WHERE user_id = $4 AND match_id = $5`,
-          [fisPoints, mwPoints, momPoints, row.user_id, schedule_id]
-        );        
-      }
-  
-      await client.query('COMMIT');
-      res.json({ success: true, message: 'Result saved and leaderboard updated' });
-    } catch (err) {
-      await client.query('ROLLBACK');
-      console.error('Result update error:', err);
-      res.status(500).send('Server error');
-    } finally {
-      client.release();
+  //update results
+  app.post('/api/update-results', async (req, res) => {
+  const { schedule_id, actual_first_innings_score, actual_match_winner, actual_mom } = req.body;
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // 1. Upsert into results table
+    await client.query(
+      `INSERT INTO results (schedule_id, actual_first_innings_score, actual_match_winner, actual_mom)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (schedule_id) DO UPDATE
+       SET actual_first_innings_score = $2,
+           actual_match_winner = $3,
+           actual_mom = $4`,
+      [schedule_id, actual_first_innings_score, actual_match_winner, actual_mom]
+    );
+
+    // 2. Fetch predictions by matching match_id with schedule_id value
+    const predictions = await client.query(
+      `SELECT p.user_id, u.username, p.predicted_score, p.predicted_winner, p.predicted_mom
+       FROM predictions p
+       JOIN users u ON u.id = p.user_id
+       WHERE p.match_id = $1`,
+      [schedule_id]
+    );
+
+    // 3. Loop through predictions and score them
+    for (const row of predictions.rows) {
+      let fisPoints = 0, mwPoints = 0, momPoints = 0;
+
+      if (row.predicted_winner === actual_match_winner) mwPoints = 2;
+      if (row.predicted_mom === actual_mom) momPoints = 5;
+      if (Math.abs(row.predicted_score - actual_first_innings_score) <= 2) fisPoints = 3;
+
+      // 4. Upsert into leaderboard
+      await client.query(
+        `INSERT INTO leaderboard (user_id, username, fis_points, mw_points, mom_points)
+         VALUES ($1, $2, $3, $4, $5)
+         ON CONFLICT (user_id) DO UPDATE
+         SET fis_points = leaderboard.fis_points + $3,
+             mw_points = leaderboard.mw_points + $4,
+             mom_points = leaderboard.mom_points + $5`,
+        [row.user_id, row.username, fisPoints, mwPoints, momPoints]
+      );
+
+      // 5. Update predictions with points
+      await client.query(
+        `UPDATE predictions
+         SET fis_points = $1, mw_points = $2, mom_points = $3, total_points = $1 + $2 + $3
+         WHERE user_id = $4 AND match_id = $5`,
+        [fisPoints, mwPoints, momPoints, row.user_id, schedule_id]
+      );
     }
-  });
+
+    await client.query('COMMIT');
+    res.json({ success: true, message: 'Result saved and leaderboard updated' });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('Result update error:', err.stack);
+    res.status(500).send('Server error');
+  } finally {
+    client.release();
+  }
+});
+
   
   //all matches
   app.get('/api/get-all-matches', async (req, res) => {
