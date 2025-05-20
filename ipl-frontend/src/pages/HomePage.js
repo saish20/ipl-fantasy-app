@@ -25,7 +25,7 @@ const HomePage = () => {
             <span role="img" aria-label="bar chart">📊</span> View Leaderboard
           </button>
           {userType === 'admin' && (
-            <button onClick={() => navigate('/adminresults')}>
+            <button onClick={() => navigate('/admin/results')}>
               <span role="img" aria-label="admin panel">🛠️</span> Admin Results
             </button>
           )}
