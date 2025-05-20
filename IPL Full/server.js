@@ -174,16 +174,16 @@ app.get('/api/leaderboard', async (req, res) => {
       if (row.predicted_mom === actual_mom) momPoints = 5;
       if (Math.abs(row.predicted_score - actual_first_innings_score) <= 2) fisPoints = 3;
 
-      // 4. Upsert into leaderboard
-      await client.query(
-        `INSERT INTO leaderboard (user_id, username, fis_points, mw_points, mom_points)
-         VALUES ($1, $2, $3, $4, $5)
-         ON CONFLICT (user_id) DO UPDATE
-         SET fis_points = leaderboard.fis_points + $3,
-             mw_points = leaderboard.mw_points + $4,
-             mom_points = leaderboard.mom_points + $5`,
-        [row.user_id, row.username, fisPoints, mwPoints, momPoints]
-      );
+    await client.query(
+      `INSERT INTO leaderboard (user_id, username, fis_points, mw_points, mom_points)
+      VALUES ($1, $2, $3::int, $4::int, $5::int)
+      ON CONFLICT (user_id) DO UPDATE
+      SET fis_points = leaderboard.fis_points + $3::int,
+          mw_points = leaderboard.mw_points + $4::int,
+          mom_points = leaderboard.mom_points + $5::int`,
+      [row.user_id, row.username, fisPoints, mwPoints, momPoints]
+    );
+
 
       // 5. Update predictions with points
       await client.query(
