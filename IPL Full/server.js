@@ -189,7 +189,7 @@ app.post('/api/update-results', async (req, res) => {
       // 5. Update predictions with points
       await client.query(
         `UPDATE predictions
-         SET fis_points = $1, mw_points = $2, mom_points = $3, total_points = $1 + $2 + $3
+         SET fis_points = $1::int, mw_points = $2::int, mom_points = $3::int, total_points = $1::int + $2::int + $3::int
          WHERE user_id = $4 AND match_id = $5`,
         [fisPoints, mwPoints, momPoints, row.user_id, schedule_id]
       );
