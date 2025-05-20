@@ -75,8 +75,8 @@ app.post('/api/submit-prediction', async (req, res) => {
   
     try {
       await pool.query(
-        `INSERT INTO predictions (user_id, match_id, predicted_score, predicted_winner, predicted_mom, fis_points, mw_points, mom_points, total_points)
-         VALUES ($1, $2, $3, $4, $5, 0, 0, 0, 0)`,
+        `INSERT INTO predictions (user_id, match_id, predicted_score, predicted_winner, predicted_mom, fis_points, mw_points, mom_points, total_points,submitted_at)
+         VALUES ($1, $2, $3, $4, $5, 0, 0, 0, 0, CURRENT_TIMESTAMP)`,
         [
           user_id,
           match_id,
@@ -222,6 +222,26 @@ app.post('/api/update-results', async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching all matches:', error.message);
+    res.status(500).send('Server error');
+  }
+});
+
+
+app.get('/api/get-predictions', async (req, res) => {
+  const { match_id } = req.query;
+
+  try {
+    const result = await pool.query(
+      `SELECT p.predicted_winner, p.predicted_score, p.predicted_mom, u.username
+       FROM predictions p
+       JOIN users u ON u.id = p.user_id
+       WHERE p.match_id = $1`,
+      [match_id]
+    );
+
+    res.json({ success: true, predictions: result.rows });
+  } catch (err) {
+    console.error('Fetch predictions error:', err.stack);
     res.status(500).send('Server error');
   }
 });

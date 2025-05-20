@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './AdminResultForm.css';
+import { useNavigate } from 'react-router-dom';
+
 
 
 const AdminResultForm = () => {
@@ -10,6 +12,8 @@ const AdminResultForm = () => {
   const [winner, setWinner] = useState('');
   const [mom, setMom] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     axios.get('https://ipl-fantasy-app.onrender.com/api/get-all-matches')
@@ -27,6 +31,7 @@ const AdminResultForm = () => {
         actual_mom: mom
       });
       setMessage('Match result saved!');
+      navigate('/home'); 
     } catch (err) {
       setMessage('Failed to save result.');
     }

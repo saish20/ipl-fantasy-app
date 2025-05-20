@@ -69,3 +69,22 @@
     color: #0d47a1;
   }
   
+
+  .admin-section {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: #f3f3f3;
+  border-radius: 8px;
+}
+
+.predictions-table {
+  width: 100%;
+  margin-top: 1rem;
+  border-collapse: collapse;
+}
+
+.predictions-table th, .predictions-table td {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: center;
+}
