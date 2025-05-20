@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/ipl-fantasy-app/static/css/main.96ec0a79.css",
-    "main.js": "/ipl-fantasy-app/static/js/main.a31a54c6.js",
+    "main.js": "/ipl-fantasy-app/static/js/main.36915fe9.js",
     "static/js/453.9f3b998a.chunk.js": "/ipl-fantasy-app/static/js/453.9f3b998a.chunk.js",
     "static/media/ipl-logo.png": "/ipl-fantasy-app/static/media/ipl-logo.64e5b1f3dc9b86b707ea.png",
     "index.html": "/ipl-fantasy-app/index.html",
     "main.96ec0a79.css.map": "/ipl-fantasy-app/static/css/main.96ec0a79.css.map",
-    "main.a31a54c6.js.map": "/ipl-fantasy-app/static/js/main.a31a54c6.js.map",
+    "main.36915fe9.js.map": "/ipl-fantasy-app/static/js/main.36915fe9.js.map",
     "453.9f3b998a.chunk.js.map": "/ipl-fantasy-app/static/js/453.9f3b998a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.96ec0a79.css",
-    "static/js/main.a31a54c6.js"
+    "static/js/main.36915fe9.js"
   ]
 }
