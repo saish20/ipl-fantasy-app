@@ -188,9 +188,12 @@ app.post('/api/update-results', async (req, res) => {
         ON CONFLICT (user_id) DO UPDATE
         SET fis_points = leaderboard.fis_points + new_values.fis_points,
             mw_points = leaderboard.mw_points + new_values.mw_points,
-            mom_points = leaderboard.mom_points + new_values.mom_points`,
+            mom_points = leaderboard.mom_points + new_values.mom_points
+        FROM new_values
+        WHERE leaderboard.user_id = new_values.user_id`,
         [row.user_id, row.username, fisPoints, mwPoints, momPoints]
       );
+
 
 
       // 5. Update predictions with points
