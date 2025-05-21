@@ -29,8 +29,12 @@ const HomePage = () => {
   // Load predictions when a match is selected
   useEffect(() => {
     if (selectedMatchId) {
+      console.log("Fetching predictions for match:", selectedMatchId); 
       axios.get(`https://ipl-fantasy-app.onrender.com/api/get-predictions?match_id=${selectedMatchId}`)
-        .then(res => setPredictions(res.data.predictions))
+        .then(res => {
+        console.log("API Response:", res.data); // 💡 Log full response
+        setPredictions(res.data.predictions || []);
+      })
         .catch(err => console.error(err));
     }
   }, [selectedMatchId]);
