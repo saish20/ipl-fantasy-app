@@ -17,7 +17,6 @@ const HomePage = () => {
     navigate('/');
   };
 
-  // Load matches for admin dropdown
   useEffect(() => {
     if (userType === 'admin') {
       axios.get('https://ipl-fantasy-app.onrender.com/api/get-all-matches')
@@ -26,15 +25,13 @@ const HomePage = () => {
     }
   }, [userType]);
 
-  // Load predictions when a match is selected
   useEffect(() => {
     if (selectedMatchId) {
-      console.log("Fetching predictions for match:", selectedMatchId); 
       axios.get(`https://ipl-fantasy-app.onrender.com/api/get-predictions?match_id=${selectedMatchId}`)
         .then(res => {
-        console.log("API Response:", res.data); // 💡 Log full response
-        setPredictions(res.data.predictions || []);
-      })
+          console.log('Fetched predictions:', res.data);
+          setPredictions(res.data.predictions);
+        })
         .catch(err => console.error(err));
     }
   }, [selectedMatchId]);
@@ -54,49 +51,9 @@ const HomePage = () => {
           </button>
 
           {userType === 'admin' && (
-            <>
-              <button onClick={() => navigate('/admin/results')}>
-                <span role="img" aria-label="admin panel">🛠️</span> Admin Results
-              </button>
-
-              <div className="admin-section">
-                <h3>Display Predictions</h3>
-                <select
-                  value={selectedMatchId}
-                  onChange={(e) => setSelectedMatchId(e.target.value)}
-                >
-                  <option value="">-- Select Match --</option>
-                  {matches.map((match) => (
-                    <option key={match.id} value={match.id}>
-                      {match.team1} vs {match.team2} ({new Date(match.match_date).toDateString()})
-                    </option>
-                  ))}
-                </select>
-
-                {predictions.length > 0 && (
-                  <table className="predictions-table">
-                    <thead>
-                      <tr>
-                        <th>User</th>
-                        <th>Predicted Winner</th>
-                        <th>Score</th>
-                        <th>MOM</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {predictions.map((p, i) => (
-                        <tr key={i}>
-                          <td>{p.username}</td>
-                          <td>{p.predicted_winner}</td>
-                          <td>{p.predicted_score}</td>
-                          <td>{p.predicted_mom}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
-            </>
+            <button onClick={() => navigate('/admin/results')}>
+              <span role="img" aria-label="admin panel">🛠️</span> Admin Results
+            </button>
           )}
         </div>
 
@@ -104,6 +61,47 @@ const HomePage = () => {
           <span role="img" aria-label="door">🚪</span> Logout
         </button>
       </div>
+
+      {/* 🔥 Move this OUTSIDE .home-card */}
+      {userType === 'admin' && (
+        <div className="admin-section">
+          <h3>Display Predictions</h3>
+          <select
+            value={selectedMatchId}
+            onChange={(e) => setSelectedMatchId(e.target.value)}
+          >
+            <option value="">-- Select Match --</option>
+            {matches.map((match) => (
+              <option key={match.id} value={match.id}>
+                {match.team1} vs {match.team2} ({new Date(match.match_date).toDateString()})
+              </option>
+            ))}
+          </select>
+
+          {predictions.length > 0 && (
+            <table className="predictions-table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Predicted Winner</th>
+                  <th>Score</th>
+                  <th>MOM</th>
+                </tr>
+              </thead>
+              <tbody>
+                {predictions.map((p, i) => (
+                  <tr key={i}>
+                    <td>{p.username}</td>
+                    <td>{p.predicted_winner}</td>
+                    <td>{p.predicted_score}</td>
+                    <td>{p.predicted_mom}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
     </div>
   );
 };
