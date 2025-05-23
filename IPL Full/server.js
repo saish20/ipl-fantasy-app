@@ -71,30 +71,44 @@ app.get('/api/get-matches', async (req, res) => {
   // Submit Prediction API
 // Submit Prediction API
 app.post('/api/submit-prediction', async (req, res) => {
-    const { user_id, match_id, predicted_first_innings_score, predicted_match_winner, predicted_man_of_the_match } = req.body;
-  
-    try {
-      await pool.query(
-        `INSERT INTO predictions (user_id, match_id, predicted_score, predicted_winner, predicted_mom, fis_points, mw_points, mom_points, total_points,submitted_at)
-         VALUES ($1, $2, $3, $4, $5, 0, 0, 0, 0, CURRENT_TIMESTAMP)`,
-        [
-          user_id,
-          match_id,
-          predicted_first_innings_score,   // maps to predicted_score
-          predicted_match_winner,           // maps to predicted_winner
-          predicted_man_of_the_match        // maps to predicted_mom
-        ]
-      );
-  
-      res.json({
-        success: true,
-        message: 'Prediction submitted successfully!'
-      });
-    } catch (error) {
-      console.error('Prediction error:', error);
-      res.status(500).send('Server error');
-    }
-  });
+  const { user_id, match_id, predicted_first_innings_score, predicted_match_winner, predicted_man_of_the_match } = req.body;
+
+  try {
+    await pool.query(
+      `INSERT INTO predictions (
+         user_id, match_id, predicted_score, predicted_winner, predicted_mom, 
+         fis_points, mw_points, mom_points, total_points, submitted_at
+       )
+       VALUES ($1, $2, $3, $4, $5, 0, 0, 0, 0, CURRENT_TIMESTAMP)
+       ON CONFLICT (user_id, match_id)
+       DO UPDATE SET 
+         predicted_score = EXCLUDED.predicted_score,
+         predicted_winner = EXCLUDED.predicted_winner,
+         predicted_mom = EXCLUDED.predicted_mom,
+         fis_points = 0,
+         mw_points = 0,
+         mom_points = 0,
+         total_points = 0,
+         submitted_at = CURRENT_TIMESTAMP;`,
+      [
+        user_id,
+        match_id,
+        predicted_first_innings_score,
+        predicted_match_winner,
+        predicted_man_of_the_match
+      ]
+    );
+
+    res.json({
+      success: true,
+      message: 'Prediction submitted successfully!'
+    });
+  } catch (error) {
+    console.error('Prediction error:', error);
+    res.status(500).send('Server error');
+  }
+});
+
   
 // Leaderboard API
 app.get('/api/leaderboard', async (req, res) => {
