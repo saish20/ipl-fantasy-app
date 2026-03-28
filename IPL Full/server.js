@@ -281,3 +281,32 @@ app.post('/api/register', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+
+// Get today's predictions for admin view
+app.get('/api/get-all-predictions', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT
+        p.id,
+        u.username,
+        p.predicted_winner,
+        p.predicted_score,
+        p.predicted_mom,
+        p.submitted_at
+      FROM predictions p
+      JOIN users u
+        ON u.id = p.user_id
+      WHERE DATE(p.submitted_at) = CURRENT_DATE
+      ORDER BY p.submitted_at DESC
+    `);
+
+    res.json({
+      success: true,
+      predictions: result.rows
+    });
+  } catch (error) {
+    console.error('Error fetching predictions:', error.message);
+    res.status(500).send('Server error');
+  }
+});
