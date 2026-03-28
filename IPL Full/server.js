@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const express = require('express');
 const cors = require('cors');
 const pool = require('./db'); // importing db connection
@@ -22,31 +23,53 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // Login API
 app.post('/api/login', async (req, res) => {
-    const { username, code } = req.body;
-  
-    try {
-      const result = await pool.query(
-        'SELECT id, username, user_type FROM users WHERE username = $1 AND code = $2',
-        [username, code]
-      );
-  
-      if (result.rows.length > 0) {
-        res.json({
-          success: true,
-          message: 'Login successful',
-          user: result.rows[0],
-        });
-      } else {
-        res.status(401).json({
-          success: false,
-          message: 'Invalid username or code',
-        });
-      }
-    } catch (error) {
-      console.error('Login error:', error.message);
-      res.status(500).send('Server error');
+  const { username, password } = req.body;
+
+  try {
+    const result = await pool.query(
+      'SELECT id, username, user_type, password_hash FROM users WHERE username = $1',
+      [username]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid username or password',
+      });
     }
-  });
+
+    const user = result.rows[0];
+
+    if (!user.password_hash) {
+      return res.status(400).json({
+        success: false,
+        message: 'This user does not have a password set yet',
+      });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password_hash);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid username or password',
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Login successful',
+      user: {
+        id: user.id,
+        username: user.username,
+        user_type: user.user_type,
+      },
+    });
+  } catch (error) {
+    console.error('Login error:', error.message);
+    res.status(500).send('Server error');
+  }
+});
   
   // Get Upcoming Matches API
 app.get('/api/get-matches', async (req, res) => {
@@ -202,3 +225,59 @@ app.get('/api/leaderboard', async (req, res) => {
     }
   });
   
+
+  // Register API
+app.post('/api/register', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // basic validation
+    if (!username || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Username and password are required',
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters',
+      });
+    }
+
+    // check if user already exists
+    const existingUser = await pool.query(
+      'SELECT id FROM users WHERE username = $1',
+      [username]
+    );
+
+    if (existingUser.rows.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: 'Username already exists',
+      });
+    }
+
+    // hash password
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    // insert user
+    const result = await pool.query(
+      `INSERT INTO users (username, password_hash, user_type)
+       VALUES ($1, $2, $3)
+       RETURNING id, username, user_type`,
+      [username, passwordHash, 'user']
+    );
+
+    res.json({
+      success: true,
+      message: 'User registered successfully',
+      user: result.rows[0],
+    });
+
+  } catch (error) {
+    console.error('Register error:', error.message);
+    res.status(500).send('Server error');
+  }
+});
