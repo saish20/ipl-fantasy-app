@@ -98,8 +98,21 @@ app.post('/api/submit-prediction', async (req, res) => {
   
     try {
       await pool.query(
-        `INSERT INTO predictions (user_id, match_id, predicted_score, predicted_winner, predicted_mom, fis_points, mw_points, mom_points, total_points)
-         VALUES ($1, $2, $3, $4, $5, 0, 0, 0, 0)`,
+        `INSERT INTO predictions (user_id, 
+        match_id, 
+        predicted_score, 
+        predicted_winner, 
+        predicted_mom, 
+        fis_points, 
+        mw_points, 
+        mom_points, 
+        total_points)
+        VALUES ($1, $2, $3, $4, $5, 0, 0, 0, 0)
+        ON CONFLICT (user_id, match_id)
+        DO UPDATE SET
+        predicted_score = EXCLUDED.predicted_score,
+        predicted_winner = EXCLUDED.predicted_winner,
+        predicted_mom = EXCLUDED.predicted_mom`,
         [
           user_id,
           match_id,
