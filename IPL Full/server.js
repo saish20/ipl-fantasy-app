@@ -206,12 +206,18 @@ app.get('/api/leaderboard', async (req, res) => {
           [row.user_id, row.username, fisPoints, mwPoints, momPoints]
         );
 
+        const totalPoints = fisPoints + mwPoints + momPoints;
+
         await client.query(
           `UPDATE predictions
-           SET fis_points = $1, mw_points = $2, mom_points = $3, total_points = $1 + $2 + $3
-           WHERE user_id = $4 AND match_id = $5`,
-          [fisPoints, mwPoints, momPoints, row.user_id, schedule_id]
-        );        
+          SET fis_points = $1,
+              mw_points = $2,
+              mom_points = $3,
+              total_points = $4
+          WHERE user_id = $5
+            AND match_id = $6`,
+          [fisPoints, mwPoints, momPoints, totalPoints, row.user_id, schedule_id]
+        );       
       }
   
       await client.query('COMMIT');
