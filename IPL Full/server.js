@@ -112,13 +112,14 @@ app.post('/api/submit-prediction', async (req, res) => {
         DO UPDATE SET
         predicted_score = EXCLUDED.predicted_score,
         predicted_winner = EXCLUDED.predicted_winner,
-        predicted_mom = EXCLUDED.predicted_mom`,
+        predicted_mom = EXCLUDED.predicted_mom,
+        submitted_at = CURRENT_TIMESTAMP`,
         [
           user_id,
           match_id,
           predicted_first_innings_score,   // maps to predicted_score
           predicted_match_winner,           // maps to predicted_winner
-          predicted_man_of_the_match        // maps to predicted_mom
+          predicted_man_of_the_match,        // maps to predicted_mom          
         ]
       );
   
