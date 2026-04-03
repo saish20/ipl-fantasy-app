@@ -1,0 +1,65 @@
+.predict-bg {
+    background: linear-gradient(to bottom right, #0d47a1, #1565c0);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .predict-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    padding: 2rem 2.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    color: white;
+    max-width: 480px;
+    width: 90%;
+  }
+  
+  .predict-card h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .predict-card label {
+    display: block;
+    margin-top: 1rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .predict-card select,
+  .predict-card input {
+    width: 100%;
+    padding: 0.6rem;
+    border-radius: 0.4rem;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .predict-card button {
+    background-color: #ffffff;
+    color: #0d47a1;
+    font-weight: 600;
+    border: none;
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .predict-card button:hover {
+    background-color: #bbdefb;
+  }
+  
+  .message {
+    margin-top: 1rem;
+    text-align: center;
+    font-weight: bold;
+  }
+  
