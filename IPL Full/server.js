@@ -343,12 +343,12 @@ app.get('/api/predictions-visibility', async (req, res) => {
       `
       SELECT visible
       FROM prediction_visibility
-      WHERE visible_date = CURRENT_DATE
+      WHERE visible_date = (timezone('Asia/Kolkata', now()))::date
       LIMIT 1
       `
     );
 
-    const visible = result.rows.length > 0 ? result.rows[0].visible : false;
+  const visible = result.rows.length > 0 ? result.rows[0].visible : false;
 
     res.json({ showPredictionsGlobal: visible });
   } catch (error) {
@@ -364,7 +364,7 @@ app.post('/api/set-predictions-visibility', async (req, res) => {
     await pool.query(
       `
       INSERT INTO prediction_visibility (visible, visible_date, updated_at)
-      VALUES ($1, CURRENT_DATE, CURRENT_TIMESTAMP)
+      VALUES ($1, (timezone('Asia/Kolkata', now()))::date, CURRENT_TIMESTAMP)
       ON CONFLICT (visible_date)
       DO UPDATE SET
         visible = EXCLUDED.visible,
