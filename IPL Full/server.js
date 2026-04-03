@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const express = require('express');
 const cors = require('cors');
 const pool = require('./db'); // importing db connection
+let showPredictionsGlobal = false;
 
 const app = express();
 app.use(cors());
@@ -17,9 +18,6 @@ app.get('/', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // Login API
 app.post('/api/login', async (req, res) => {
@@ -330,3 +328,15 @@ app.get('/api/get-all-predictions', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+app.get('/api/predictions-visibility', (req, res) => {
+  res.json({ showPredictionsGlobal });
+});
+
+app.post('/api/toggle-predictions', (req, res) => {
+  showPredictionsGlobal = !showPredictionsGlobal;
+  res.json({ showPredictionsGlobal });
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
