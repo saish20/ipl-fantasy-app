@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const express = require('express');
 const cors = require('cors');
 const pool = require('./db'); // importing db connection
-let showPredictionsGlobal = false;
 
 const app = express();
 app.use(cors());
@@ -337,6 +336,53 @@ app.post('/api/toggle-predictions', (req, res) => {
   showPredictionsGlobal = !showPredictionsGlobal;
   res.json({ showPredictionsGlobal });
 });
+
+app.get('/api/predictions-visibility', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `
+      SELECT visible
+      FROM prediction_visibility
+      WHERE visible_date = CURRENT_DATE
+      LIMIT 1
+      `
+    );
+
+    const visible = result.rows.length > 0 ? result.rows[0].visible : false;
+
+    res.json({ showPredictionsGlobal: visible });
+  } catch (error) {
+    console.error('Error fetching prediction visibility:', error.message);
+    res.status(500).send('Server error');
+  }
+});
+
+app.post('/api/set-predictions-visibility', async (req, res) => {
+  const { visible } = req.body;
+
+  try {
+    await pool.query(
+      `
+      INSERT INTO prediction_visibility (visible, visible_date, updated_at)
+      VALUES ($1, CURRENT_DATE, CURRENT_TIMESTAMP)
+      ON CONFLICT (visible_date)
+      DO UPDATE SET
+        visible = EXCLUDED.visible,
+        updated_at = CURRENT_TIMESTAMP
+      `,
+      [visible]
+    );
+
+    res.json({
+      success: true,
+      showPredictionsGlobal: visible
+    });
+  } catch (error) {
+    console.error('Error updating prediction visibility:', error.message);
+    res.status(500).send('Server error');
+  }
+});
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
