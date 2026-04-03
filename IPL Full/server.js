@@ -328,10 +328,6 @@ app.get('/api/get-all-predictions', async (req, res) => {
   }
 });
 
-app.get('/api/predictions-visibility', (req, res) => {
-  res.json({ showPredictionsGlobal });
-});
-
 app.post('/api/toggle-predictions', (req, res) => {
   showPredictionsGlobal = !showPredictionsGlobal;
   res.json({ showPredictionsGlobal });
