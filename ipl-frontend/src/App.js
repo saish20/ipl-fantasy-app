@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import PredictPage from './pages/PredictPage';
 import LeaderboardPage from './pages/LeaderboardPage';
@@ -7,7 +7,6 @@ import HomePage from './pages/HomePage';
 import AdminResultForm from './pages/AdminResultForm';
 import RegisterPage from './pages/RegisterPage';
 import ProtectedRoute from './ProtectedRoute';
-
 
 const AppRoutes = () => {
   const navigate = useNavigate();
@@ -20,13 +19,13 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<LoginPage onLogin={handleLogin} />} />
       <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <HomePage />
-            </ProtectedRoute>
-          }
-        />
+        path="/home"
+        element={
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/predict"
         element={
@@ -35,7 +34,6 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/leaderboard"
         element={
@@ -58,7 +56,7 @@ const AppRoutes = () => {
 };
 
 const App = () => (
-  <Router basename="/ipl-fantasy-app">
+  <Router>
     <AppRoutes />
   </Router>
 );
