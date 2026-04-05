@@ -141,3 +141,19 @@
 .predictions-table tbody tr:hover {
   background: #6f92cc !important;
 }
+
+.match-filter {
+  margin: 16px 0 20px 0;
+}
+
+.match-filter label {
+  margin-right: 10px;
+  font-weight: 600;
+}
+
+.match-filter select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  min-width: 240px;
+}

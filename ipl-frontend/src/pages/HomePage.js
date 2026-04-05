@@ -9,6 +9,8 @@ const HomePage = () => {
   const userType = localStorage.getItem('user_type') || 'user';
 
   const [predictions, setPredictions] = useState([]);
+  const [matches, setMatches] = useState([]);
+  const [selectedMatchId, setSelectedMatchId] = useState('');
   const [showPredictions, setShowPredictions] = useState(false);
   const [loadingPredictions, setLoadingPredictions] = useState(false);
   const [predictionError, setPredictionError] = useState('');
@@ -31,8 +33,20 @@ const HomePage = () => {
     }
   };
 
+  const fetchMatches = async () => {
+    try {
+      const res = await axios.get(
+        'https://ipl-fantasy-app.onrender.com/api/get-all-matches'
+      );
+      setMatches(res.data.matches || []);
+    } catch (err) {
+      console.error('Failed to fetch matches:', err);
+    }
+  };
+
   useEffect(() => {
     fetchPredictionsVisibility();
+    fetchMatches();
   }, []);
 
   const updatePredictionsVisibility = async (visible) => {
@@ -74,8 +88,20 @@ const HomePage = () => {
     } else {
       setPredictions([]);
       setShowPredictions(false);
+      setSelectedMatchId('');
     }
   }, [predictionsVisibleForAll]);
+
+  const filteredPredictions = [...predictions]
+    .filter(
+      (prediction) =>
+        String(prediction.match_id || prediction.schedule_id || '') ===
+        String(selectedMatchId)
+    )
+    .sort(
+      (a, b) =>
+        new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0)
+    );
 
   return (
     <div className="home-bg">
@@ -119,8 +145,28 @@ const HomePage = () => {
           <div className="predictions-section">
             <h2>Submitted Predictions</h2>
 
-            {predictions.length === 0 ? (
-              <p className="predictions-message">No predictions found.</p>
+            <div className="match-filter">
+              <label htmlFor="matchSelect">Select Match: </label>
+              <select
+                id="matchSelect"
+                value={selectedMatchId}
+                onChange={(e) => setSelectedMatchId(e.target.value)}
+              >
+                <option value="">Choose a match</option>
+                {matches.map((match) => (
+                  <option key={match.id} value={match.id}>
+                    {match.team1} vs {match.team2}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {!selectedMatchId ? (
+              <p className="predictions-message">Please select a match.</p>
+            ) : filteredPredictions.length === 0 ? (
+              <p className="predictions-message">
+                No predictions found for this match.
+              </p>
             ) : (
               <div className="predictions-table-wrapper">
                 <table className="predictions-table">
@@ -134,25 +180,19 @@ const HomePage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {[...predictions]
-                      .sort(
-                        (a, b) =>
-                          new Date(b.submitted_at || 0) -
-                          new Date(a.submitted_at || 0)
-                      )
-                      .map((prediction, index) => (
-                        <tr key={prediction.id || index}>
-                          <td>{prediction.username || prediction.user_name || '—'}</td>
-                          <td>{prediction.predicted_winner || prediction.match_winner || '—'}</td>
-                          <td>{prediction.predicted_score || prediction.first_innings_score || '—'}</td>
-                          <td>{prediction.predicted_mom || prediction.man_of_the_match || '—'}</td>
-                          <td>
-                            {prediction.submitted_at
-                              ? new Date(prediction.submitted_at).toLocaleString()
-                              : '—'}
-                          </td>
-                        </tr>
-                      ))}
+                    {filteredPredictions.map((prediction, index) => (
+                      <tr key={prediction.id || index}>
+                        <td>{prediction.username || prediction.user_name || '—'}</td>
+                        <td>{prediction.predicted_winner || prediction.match_winner || '—'}</td>
+                        <td>{prediction.predicted_score || prediction.first_innings_score || '—'}</td>
+                        <td>{prediction.predicted_mom || prediction.man_of_the_match || '—'}</td>
+                        <td>
+                          {prediction.submitted_at
+                            ? new Date(prediction.submitted_at).toLocaleString()
+                            : '—'}
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
