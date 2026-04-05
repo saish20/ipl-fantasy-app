@@ -36,11 +36,12 @@ const HomePage = () => {
   const fetchMatches = async () => {
     try {
       const res = await axios.get(
-        'https://ipl-fantasy-app.onrender.com/api/get-all-matches'
+        'https://ipl-fantasy-app.onrender.com/api/get-matches'
       );
       setMatches(res.data.matches || []);
     } catch (err) {
       console.error('Failed to fetch matches:', err);
+      setMatches([]);
     }
   };
 
@@ -93,11 +94,7 @@ const HomePage = () => {
   }, [predictionsVisibleForAll]);
 
   const filteredPredictions = [...predictions]
-    .filter(
-      (prediction) =>
-        String(prediction.match_id || prediction.schedule_id || '') ===
-        String(selectedMatchId)
-    )
+    .filter((prediction) => String(prediction.match_id) === String(selectedMatchId))
     .sort(
       (a, b) =>
         new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0)
@@ -155,7 +152,7 @@ const HomePage = () => {
                 <option value="">Choose a match</option>
                 {matches.map((match) => (
                   <option key={match.id} value={match.id}>
-                    {match.team1} vs {match.team2}
+                    {match.team1} vs {match.team2} ({new Date(match.match_date).toDateString()})
                   </option>
                 ))}
               </select>
