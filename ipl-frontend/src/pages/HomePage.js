@@ -134,19 +134,25 @@ const HomePage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {predictions.map((prediction, index) => (
-                      <tr key={prediction.id || index}>
-                        <td>{prediction.username || prediction.user_name || '—'}</td>
-                        <td>{prediction.predicted_winner || prediction.match_winner || '—'}</td>
-                        <td>{prediction.predicted_score || prediction.first_innings_score || '—'}</td>
-                        <td>{prediction.predicted_mom || prediction.man_of_the_match || '—'}</td>
-                        <td>
-                          {prediction.submitted_at
-                            ? new Date(prediction.submitted_at).toLocaleString()
-                            : '—'}
-                        </td>
-                      </tr>
-                    ))}
+                    {[...predictions]
+                      .sort(
+                        (a, b) =>
+                          new Date(b.submitted_at || 0) -
+                          new Date(a.submitted_at || 0)
+                      )
+                      .map((prediction, index) => (
+                        <tr key={prediction.id || index}>
+                          <td>{prediction.username || prediction.user_name || '—'}</td>
+                          <td>{prediction.predicted_winner || prediction.match_winner || '—'}</td>
+                          <td>{prediction.predicted_score || prediction.first_innings_score || '—'}</td>
+                          <td>{prediction.predicted_mom || prediction.man_of_the_match || '—'}</td>
+                          <td>
+                            {prediction.submitted_at
+                              ? new Date(prediction.submitted_at).toLocaleString()
+                              : '—'}
+                          </td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>
