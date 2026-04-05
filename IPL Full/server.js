@@ -306,6 +306,7 @@ app.get('/api/get-all-predictions', async (req, res) => {
     const result = await pool.query(`
       SELECT
         p.id,
+        p.match_id,
         u.username,
         p.predicted_winner,
         p.predicted_score,
