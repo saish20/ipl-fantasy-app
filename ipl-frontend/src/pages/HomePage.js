@@ -84,14 +84,23 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    if (predictionsVisibleForAll) {
-      handleDisplayPredictions();
-    } else {
-      setPredictions([]);
-      setShowPredictions(false);
-      setSelectedMatchId('');
+    if (
+      predictionsVisibleForAll &&
+      userType !== 'admin' &&
+      matches.length > 0 &&
+      !selectedMatchId
+    ) {
+      const now = new Date();
+
+      const sortedMatches = [...matches]
+        .filter(match => new Date(match.match_date) <= now)
+        .sort((a, b) => new Date(b.match_date) - new Date(a.match_date));
+
+      if (sortedMatches.length > 0) {
+        setSelectedMatchId(sortedMatches[0].id);
+      }
     }
-  }, [predictionsVisibleForAll]);
+  }, [predictionsVisibleForAll, userType, matches, selectedMatchId]);
 
   const filteredPredictions = [...predictions]
     .filter((prediction) => String(prediction.match_id) === String(selectedMatchId))
@@ -148,6 +157,7 @@ const HomePage = () => {
                 id="matchSelect"
                 value={selectedMatchId}
                 onChange={(e) => setSelectedMatchId(e.target.value)}
+                disabled={userType !== 'admin'}
               >
                 <option value="">Choose a match</option>
                 {matches.map((match) => (
