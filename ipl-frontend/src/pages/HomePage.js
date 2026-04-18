@@ -11,7 +11,7 @@ const HomePage = () => {
   const [predictions, setPredictions] = useState([]);
   const [matches, setMatches] = useState([]);
   const [selectedMatchId, setSelectedMatchId] = useState('');
-  const [showPredictions, setShowPredictions] = useState(false);
+  // const [showPredictions, setShowPredictions] = useState(false);
   const [loadingPredictions, setLoadingPredictions] = useState(false);
   const [predictionError, setPredictionError] = useState('');
   const [predictionsVisibleForAll, setPredictionsVisibleForAll] = useState(false);
@@ -74,7 +74,7 @@ const HomePage = () => {
       );
 
       setPredictions(res.data.predictions || []);
-      setShowPredictions(true);
+      // setShowPredictions(true);
     } catch (err) {
       console.error(err);
       setPredictionError('Failed to load predictions.');
@@ -101,6 +101,16 @@ const HomePage = () => {
       }
     }
   }, [predictionsVisibleForAll, userType, matches, selectedMatchId]);
+
+  useEffect(() => {
+  if (predictionsVisibleForAll) {
+    handleDisplayPredictions();
+  } else {
+    setPredictions([]);
+    setSelectedMatchId('');
+    setPredictionError('');
+  }
+}, [predictionsVisibleForAll]);
 
   const filteredPredictions = [...predictions]
     .filter((prediction) => String(prediction.match_id) === String(selectedMatchId))
@@ -139,15 +149,7 @@ const HomePage = () => {
           )}
         </div>
 
-        {loadingPredictions && (
-          <p className="predictions-message">Loading predictions...</p>
-        )}
-
-        {predictionError && (
-          <p className="predictions-message error-message">{predictionError}</p>
-        )}
-
-        {predictionsVisibleForAll && showPredictions && (
+        {predictionsVisibleForAll && (
           <div className="predictions-section">
             <h2>Submitted Predictions</h2>
 
@@ -168,7 +170,11 @@ const HomePage = () => {
               </select>
             </div>
 
-            {!selectedMatchId ? (
+            {loadingPredictions ? (
+              <p className="predictions-message">Loading predictions...</p>
+            ) : predictionError ? (
+              <p className="predictions-message error-message">{predictionError}</p>
+            ) : !selectedMatchId ? (
               <p className="predictions-message">Please select a match.</p>
             ) : filteredPredictions.length === 0 ? (
               <p className="predictions-message">
