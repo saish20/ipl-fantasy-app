@@ -269,3 +269,88 @@
     padding: 18px;
   }
 }
+
+.clickable-player {
+  cursor: pointer;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.clickable-player:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.history-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 999;
+}
+
+.history-modal {
+  width: min(1300px, 96vw);
+  max-height: 85vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.2);
+}
+
+.history-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.history-modal-header h2 {
+  margin: 0;
+}
+
+.close-btn {
+  border: none;
+  background: transparent;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: #334155;
+}
+
+.history-table-wrap {
+  overflow-x: auto;
+}
+
+.history-table {
+  min-width: 1100px;
+}
+
+.history-state-text {
+  margin: 12px 0 4px;
+  color: #475569;
+}
+
+.signals-wrap {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.signal-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.signal-dot.green {
+  background: #22c55e;
+}
+
+.signal-dot.grey {
+  background: #cbd5e1;
+}

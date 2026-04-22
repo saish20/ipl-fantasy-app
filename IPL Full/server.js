@@ -380,6 +380,100 @@ app.post('/api/set-predictions-visibility', async (req, res) => {
   }
 });
 
+app.get('/api/player-predictions/:username', async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const query = `
+      SELECT 
+        s.match_date,
+        s.team1,
+        s.team2,
+        p.predicted_winner,
+        p.predicted_score,
+        p.predicted_mom,
+        r.actual_match_winner,
+        r.actual_first_innings_score,
+        r.actual_mom,
+        CASE 
+          WHEN p.predicted_winner = r.actual_match_winner THEN 1 ELSE 0 
+        END AS winner_correct,
+        CASE 
+          WHEN p.predicted_score = r.actual_first_innings_score THEN 1 ELSE 0 
+        END AS score_correct,
+        CASE 
+          WHEN p.predicted_mom = r.actual_mom THEN 1 ELSE 0 
+        END AS mom_correct
+      FROM predictions p
+      JOIN users u 
+        ON p.user_id = u.id
+      JOIN schedule s 
+        ON p.match_id = s.id
+      LEFT JOIN results r 
+        ON p.match_id = r.schedule_id
+      WHERE LOWER(TRIM(u.username)) = LOWER(TRIM($1))
+      ORDER BY s.match_date ASC
+    `;
+
+    const result = await pool.query(query, [username]);
+
+    res.json({
+      success: true,
+      predictions: result.rows
+    });
+  } catch (error) {
+    console.error('Error fetching player prediction history:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch player prediction history'
+    });
+  }
+});
+
+app.get('/api/player-predictions/:username', async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const query = `
+      SELECT 
+        s.match_date,
+        p.predicted_winner,
+        p.predicted_score,
+        p.predicted_mom,
+        r.actual_match_winner,
+        r.actual_first_innings_score,
+        r.actual_mom,
+        CASE 
+          WHEN p.predicted_winner = r.actual_match_winner THEN 1 ELSE 0 
+        END AS winner_correct,
+        CASE 
+          WHEN p.predicted_score = r.actual_first_innings_score THEN 1 ELSE 0 
+        END AS score_correct,
+        CASE 
+          WHEN p.predicted_mom = r.actual_mom THEN 1 ELSE 0 
+        END AS mom_correct
+      FROM predictions p
+      JOIN users u ON p.user_id = u.id
+      JOIN schedule s ON p.match_id = s.id
+      LEFT JOIN results r ON p.match_id = r.schedule_id
+      WHERE LOWER(TRIM(u.username)) = LOWER(TRIM($1))
+      ORDER BY s.match_date ASC
+    `;
+
+    const result = await pool.query(query, [username]);
+
+    res.json({
+      success: true,
+      predictions: result.rows,
+    });
+  } catch (error) {
+    console.error('Error fetching player prediction history:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch player prediction history',
+    });
+  }
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

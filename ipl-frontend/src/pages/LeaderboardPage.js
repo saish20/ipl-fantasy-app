@@ -5,6 +5,11 @@ import './LeaderboardPage.css';
 
 const LeaderboardPage = () => {
   const [data, setData] = useState([]);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [playerHistory, setPlayerHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,6 +67,51 @@ const LeaderboardPage = () => {
     ];
   }, [rankedOverall, mwRanked, fisRanked]);
 
+  const handlePlayerClick = async (playerName) => {
+    try {
+      setSelectedPlayer(playerName);
+      setShowHistoryModal(true);
+      setHistoryLoading(true);
+      setPlayerHistory([]);
+
+      const res = await axios.get(
+        `https://ipl-fantasy-app.onrender.com/api/player-predictions/${encodeURIComponent(playerName)}`
+      );
+
+      setPlayerHistory(res.data.predictions || []);
+    } catch (err) {
+      console.error('Failed to fetch player history:', err);
+      setPlayerHistory([]);
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
+  const closeHistoryModal = () => {
+    setShowHistoryModal(false);
+    setSelectedPlayer(null);
+    setPlayerHistory([]);
+  };
+
+  const renderSignals = (match) => {
+    const winnerCorrect = Number(match.winner_correct || 0);
+    const scoreCorrect = Number(match.score_correct || 0);
+    const momCorrect = Number(match.mom_correct || 0);
+
+    const correctCount = winnerCorrect + scoreCorrect + momCorrect;
+
+    return (
+      <div className="signals-wrap">
+        {[1, 2, 3].map((dot) => (
+          <span
+            key={dot}
+            className={`signal-dot ${dot <= correctCount ? 'green' : 'grey'}`}
+          />
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="leaderboard-page">
       <div className="leaderboard-shell">
@@ -111,7 +161,12 @@ const LeaderboardPage = () => {
                         {index + 1}
                       </span>
                     </td>
-                    <td className="player-cell">{row.username}</td>
+                    <td
+                      className="player-cell clickable-player"
+                      onClick={() => handlePlayerClick(row.username)}
+                    >
+                      {row.username}
+                    </td>
                     <td>{row.total}</td>
                   </tr>
                 ))}
@@ -130,7 +185,10 @@ const LeaderboardPage = () => {
               <div className="breakdown-title">Match Winner</div>
               {mwRanked.map((row, index) => (
                 <div className="breakdown-row" key={`mw-${row.username}`}>
-                  <span className="breakdown-name">
+                  <span
+                    className="breakdown-name clickable-player"
+                    onClick={() => handlePlayerClick(row.username)}
+                  >
                     {index + 1}. {row.username}
                   </span>
                   <span className="breakdown-score">{row.mw_points || 0}</span>
@@ -142,7 +200,10 @@ const LeaderboardPage = () => {
               <div className="breakdown-title">First Innings Score</div>
               {fisRanked.map((row, index) => (
                 <div className="breakdown-row" key={`fis-${row.username}`}>
-                  <span className="breakdown-name">
+                  <span
+                    className="breakdown-name clickable-player"
+                    onClick={() => handlePlayerClick(row.username)}
+                  >
                     {index + 1}. {row.username}
                   </span>
                   <span className="breakdown-score">{row.fis_points || 0}</span>
@@ -154,7 +215,10 @@ const LeaderboardPage = () => {
               <div className="breakdown-title">MOM</div>
               {momRanked.map((row, index) => (
                 <div className="breakdown-row" key={`mom-${row.username}`}>
-                  <span className="breakdown-name">
+                  <span
+                    className="breakdown-name clickable-player"
+                    onClick={() => handlePlayerClick(row.username)}
+                  >
                     {index + 1}. {row.username}
                   </span>
                   <span className="breakdown-score">{row.mom_points || 0}</span>
@@ -163,6 +227,59 @@ const LeaderboardPage = () => {
             </div>
           </div>
         </section>
+
+        {showHistoryModal && (
+          <div className="history-modal-overlay" onClick={closeHistoryModal}>
+            <div
+              className="history-modal"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="history-modal-header">
+                <h2>{selectedPlayer}'s Performance So Far</h2>
+                <button className="close-btn" onClick={closeHistoryModal}>
+                  ✕
+                </button>
+              </div>
+
+              {historyLoading ? (
+                <p className="history-state-text">Loading...</p>
+              ) : playerHistory.length === 0 ? (
+                <p className="history-state-text">No prediction history found.</p>
+              ) : (
+                <div className="history-table-wrap">
+                  <table className="modern-table history-table">
+                    <thead>
+                      <tr>
+                        <th>Match Date</th>
+                        <th>Predicted Winner</th>
+                        <th>Actual Winner</th>
+                        <th>Predicted Score</th>
+                        <th>Actual Score</th>
+                        <th>Predicted MOM</th>
+                        <th>Actual MOM</th>
+                        <th>Signals</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {playerHistory.map((match, index) => (
+                        <tr key={`${match.match_date}-${index}`}>
+                          <td>{match.match_date || '-'}</td>
+                          <td>{match.predicted_winner || '-'}</td>
+                          <td>{match.actual_match_winner || '-'}</td>
+                          <td>{match.predicted_score ?? '-'}</td>
+                          <td>{match.actual_first_innings_score ?? '-'}</td>
+                          <td>{match.predicted_mom || '-'}</td>
+                          <td>{match.actual_mom || '-'}</td>
+                          <td>{renderSignals(match)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
